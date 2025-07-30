@@ -4,14 +4,14 @@ pipeline {
     stages {
         stage('Deploy To Kubernetes') {
             steps {
-                sh "kubectl apply -f deployment-service.yml"
+                sh 'kubectl apply -f deployment-service.yml'
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh "kubectl get svc -n default"
+                sh 'kubectl get svc -n default'
             }
-        }
-    }
+        }
+    }
 }
