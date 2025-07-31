@@ -4,25 +4,19 @@ pipeline {
     stages {
         stage('Deploy To Kubernetes') {
             steps {
-                echo 'Applying Kubernetes deployment and service YAML'
-                sh "kubectl apply -f deployment-service.yml"
+                withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'EKS', contextName: '', credentialsId: 'k8-token', namespace: 'webapps', serverUrl: 'https://18597938C0775F021940DA658A3977B6.gr7.us-east-2.eks.amazonaws.com']]) {
+                    sh "kubectl apply -f deployment-service.yml"
+                    
+                }
             }
         }
         
-        stage('Verify Deployment') {
+        stage('verify Deployment') {
             steps {
-                echo 'Checking Kubernetes services in default namespace'
-                sh "kubectl get svc -n default"
+                withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'EKS', contextName: '', credentialsId: 'k8-token', namespace: 'webapps', serverUrl: 'https://18597938C0775F021940DA658A3977B6.gr7.us-east-2.eks.amazonaws.com']]) {
+                    sh "kubectl get svc -n webapps"
+                }
             }
-        }
-    }
-    
-    post {
-        always {
-            echo 'Pipeline completed.'
-        }
-        failure {
-            echo 'Pipeline failed. Please check the logs.'
         }
     }
 }
