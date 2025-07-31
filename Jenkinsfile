@@ -8,9 +8,9 @@ pipeline {
     stages {
         stage('Deploy To Kubernetes') {
             steps {
-                withCredentials([string(credentialsId: 'kubeconfig-eks', variable: 'KUBECONFIG_CONTENT')]) {
+                withCredentials([string(credentialsId: 'kubeconfig-eks-b64', variable: 'KUBECONFIG_CONTENT')]) {
                     sh '''
-                        echo "$KUBECONFIG_CONTENT" > $KUBECONFIG_FILE
+                        echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG_FILE
                         export KUBECONFIG=$KUBECONFIG_FILE
                         kubectl apply -f deployment-service.yml
                     '''
@@ -20,9 +20,9 @@ pipeline {
 
         stage('Verify Deployment') {
             steps {
-                withCredentials([string(credentialsId: 'kubeconfig-eks', variable: 'KUBECONFIG_CONTENT')]) {
+                withCredentials([string(credentialsId: 'kubeconfig-eks-b64', variable: 'KUBECONFIG_CONTENT')]) {
                     sh '''
-                        echo "$KUBECONFIG_CONTENT" > $KUBECONFIG_FILE
+                        echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG_FILE
                         export KUBECONFIG=$KUBECONFIG_FILE
                         kubectl get svc -n webapps
                     '''
@@ -31,5 +31,6 @@ pipeline {
         }
     }
 }
+
 
 
