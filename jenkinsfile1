@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Deploy to Kubernetes') {
+            steps {
+               withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'EKS2', contextName: '', credentialsId: 'k8-token', namespace: 'webapps', serverUrl: 'https://B8236B5DE4F77EE4B422E5F071B34210.gr7.us-east-2.eks.amazonaws.com']]) {
+                   sh"kubectl apply -f deployment-service.yml"
+                   sleep 60
+                }
+            } 
+        }
+        stage('verify deployment') {
+            steps {
+                withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'EKS2', contextName: '', credentialsId: 'k8-token', namespace: 'webapps', serverUrl: 'https://B8236B5DE4F77EE4B422E5F071B34210.gr7.us-east-2.eks.amazonaws.com']]) {
+                    sh "kubectl get all -n webapps"
+                }
+            }
+        }
+    }
+}
