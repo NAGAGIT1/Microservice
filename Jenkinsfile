@@ -18,10 +18,8 @@ pipeline {
 
         stage('Verify Deployment') {
             steps {
-                withCredentials([string(credentialsId: 'docker', variable: 'KUBECONFIG_CONTENT')]) {
-                    sh '''
-                        echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG_FILE
-                        export KUBECONFIG=$KUBECONFIG_FILE
+                withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'nagauppu', passwordVariable: 'NANAamma@1023')]) { 
+                    sh 'echo $NANAamma@1023 | docker login -u $nagauppu --password-stdin'
                         kubectl get svc -n webapps
                     '''
                 }
