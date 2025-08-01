@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Deploy To Kubernetes') {
             steps {
-                withCredentials([string(credentialsId: 'kubeconfig-eks-b64', variable: 'KUBECONFIG_CONTENT')]) {
+                withCredentials([string(credentialsId: 'docker', variable: 'KUBECONFIG_CONTENT')]) {
                     sh '''
                         echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG_FILE
                         export KUBECONFIG=$KUBECONFIG_FILE
@@ -20,7 +20,7 @@ pipeline {
 
         stage('Verify Deployment') {
             steps {
-                withCredentials([string(credentialsId: 'kubeconfig-eks-b64', variable: 'KUBECONFIG_CONTENT')]) {
+                withCredentials([string(credentialsId: 'docker', variable: 'KUBECONFIG_CONTENT')]) {
                     sh '''
                         echo "$KUBECONFIG_CONTENT" | base64 -d > $KUBECONFIG_FILE
                         export KUBECONFIG=$KUBECONFIG_FILE
